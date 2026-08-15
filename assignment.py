@@ -20,10 +20,26 @@ class Assignment:
     def label(self):
         return "ASSIGNMENT"
 
+    def display(self):
+        status = "PASS"
+        if not self.is_passing():
+            status = "FAIL"
+
+        line = "[{}] {} ({}) - {}/{} = {:.1f}% - due {} - {}".format(
+        self.label(),
+        self.title,
+        self.subject,
+        self.score,
+        self.max_score,
+        self.percentage(),
+        self.due_date,
+        status
+    )
+        return line 
 
 class Homework(Assignment):
     """A homework. Uses super() so it reuses the Assignment constructor."""
-    
+
     pass_mark = 30
 
     def __init__(self, subject, title, score, max_score, due_date):
