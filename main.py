@@ -12,6 +12,7 @@ def show_menu():
     print("1) Add homework")
     print("2) Add exam")
     print("3) List assignments")
+    print("4) Filter (by subject / type / month)")
     print("0) Exit")
     print("===================================")
 
@@ -22,7 +23,7 @@ def add_assignment(tracker, kind):
     print("--- Add a new {} ---".format(kind))
 
     subject = input("Subject     :")
-    title = input("Title    :")
+    title = input("Title       :")
     max_score = float(input("Max Score   :"))
     score = float(input("Score       :"))
     due_date = input("Due Date (YYYY-MM-DD) :")
@@ -65,11 +66,51 @@ def main():
             add_assignment(tracker, "exam")
         elif choice == "3":
             print_assignments(tracker.list_assignments())
+        elif choice == "4":
+            do_filter(tracker)
         elif choice == "0":
             print("\nGoodbye! Nothing was saved because this is a session only progam")
             running = False
         else:
-            print("\n!! '{}' is not on the menu. Please choose 0 to 3.".format(choice))
+            print("\n!! '{}' is not on the menu. Please choose 0 to 4.".format(choice))
+
+def do_filter(tracker):
+    """Small menu for the filter option."""
+    if len(tracker.list_assignments()) == 0:
+        print("\nThere are no assignments to filter yet.")
+        return
+
+    print()
+    print("--- Filter Assignments ---")
+    print("a) By type (homework or exam)")
+    print("b) By subject")
+    print("c) By month (example: 2026-07)")
+    choice = input("Your choice: ").strip().lower()
+
+    if choice == "a":
+        atype = input("Enter the type (homework or exam): ").strip().lower()
+        if atype != "homework" and atype != "exam":
+            print("\nInvalid type. Must be 'homework' or 'exam'.")
+            return
+        results = tracker.filter_assignments("type", atype)
+
+    elif choice == "b":
+        subject = input("Enter the subject: ")
+        results = tracker.filter_assignments("subject", subject)
+
+    elif choice == "c":
+        month = input("Enter the month (YYYY-MM): ")
+        results = tracker.filter_assignments("month", month)
+
+    else:
+        print("!! That is not a filter option.")
+        return
+
+    if len(results) == 0:
+        print("\nNo assignments matched your filter.")
+    else:
+        print_assignments(results)
+
 
 if __name__ == "__main__":
     main()
