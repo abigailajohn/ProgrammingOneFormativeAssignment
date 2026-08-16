@@ -13,6 +13,7 @@ def show_menu():
     print("2) Add exam")
     print("3) List assignments")
     print("4) Filter (by subject / type / month)")
+    print("5) Show summary")
     print("0) Exit")
     print("===================================")
 
@@ -49,30 +50,6 @@ def print_assignments(items):
         print("{}. {}".format(number, item.display()))
         number = number + 1
     print("Total: {} assignment(s)".format(len(items)))
-
-def main():
-    """The main program loop."""
-    tracker = GradeTracker()
-    print("Welcome to the Grade Tracker!")
-
-    running = True
-    while running:
-        show_menu()
-        choice = input("Choose and option: ").strip()
-
-        if choice == "1":
-            add_assignment(tracker, "homework")
-        elif choice == "2":
-            add_assignment(tracker, "exam")
-        elif choice == "3":
-            print_assignments(tracker.list_assignments())
-        elif choice == "4":
-            do_filter(tracker)
-        elif choice == "0":
-            print("\nGoodbye! Nothing was saved because this is a session only progam")
-            running = False
-        else:
-            print("\n!! '{}' is not on the menu. Please choose 0 to 4.".format(choice))
 
 def do_filter(tracker):
     """Small menu for the filter option."""
@@ -111,6 +88,57 @@ def do_filter(tracker):
     else:
         print_assignments(results)
 
+def print_summary(tracker):
+    """Prints the overall average, the subject averages and the best/worst."""
+    summary = tracker.summarize()
+
+    print()
+    if summary is None:
+        print("There are no assignments yet, so there is no summary.")
+        return
+
+    print()
+    print("========== SUMMARY ==========")
+    print("Assignments recorded: {}".format(summary["count"]))
+    print("Overall average     : {:.1f}%".format(summary["overall"]))
+    print()
+    print("Average per subject:")
+    for subject in summary["subjects"]:
+        print("- {} : {:.1f}%".format(subject, summary["subjects"][subject]))
+    print()
+    print("Highest score : {} ({:.1f}%)".format(summary["best"].title, summary["best"].percentage()))
+    print("Lowest score  : {} ({:.1f}%)".format(summary["worst"].title, summary["worst"].percentage()))
+
+    if summary["overall"] < 50:
+        print()
+        print("WARNING: your overall average is under 50%.")
+    print("=================================")
+
+def main():
+    """The main program loop."""
+    tracker = GradeTracker()
+    print("Welcome to the Grade Tracker!")
+
+    running = True
+    while running:
+        show_menu()
+        choice = input("Choose and option: ").strip()
+
+        if choice == "1":
+            add_assignment(tracker, "homework")
+        elif choice == "2":
+            add_assignment(tracker, "exam")
+        elif choice == "3":
+            print_assignments(tracker.list_assignments())
+        elif choice == "4":
+            do_filter(tracker)
+        elif choice == "5":
+            print_summary(tracker)
+        elif choice == "0":
+            print("\nGoodbye! Nothing was saved because this is a session only progam")
+            running = False
+        else:
+            print("\n!! '{}' is not on the menu. Please choose 0 to 5.".format(choice))
 
 if __name__ == "__main__":
     main()
