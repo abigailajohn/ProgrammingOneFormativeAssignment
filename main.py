@@ -23,7 +23,7 @@ def add_assignment(tracker, kind):
     print("--- Add a new {} ---".format(kind))
 
     subject = input("Subject     :")
-    title = input("Title       :")
+    title = input("Title        :")
     max_score = float(input("Max Score   :"))
     score = float(input("Score       :"))
     due_date = input("Due Date (YYYY-MM-DD) :")

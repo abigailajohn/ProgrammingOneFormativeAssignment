@@ -1,6 +1,5 @@
-#file for GradeTracker class. Keeps all the assignments in a list
-
 class GradeTracker:
+
     def __init__(self):
         self.assignments = []
 
