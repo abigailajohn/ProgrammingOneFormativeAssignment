@@ -5,6 +5,77 @@
 from assignment import Homework, Exam
 from tracker import GradeTracker
 
+def ask_text(question):
+    """Keeps asking until the user types somwthing that is not empty."""
+    while True:
+        answer = input(question).strip()
+        if answer == "":
+            print("!! This cannot be empty. Please try again.")
+        else:
+            return answer
+
+def ask_number(question):
+    """Keeps asking until the user types a number that is not negative."""
+    while True:
+        answer = input(question).strip()
+        try:
+            number = float(answer)
+        except ValueError:
+            print("!! That is not a number. Type something like 15 or 15.5")
+            continue
+
+        if number < 0:
+            print("!! This cannot be negative. Please try again.")
+            continue
+        return number
+
+def is_valid_date(date_text):
+    """Checks if the date is in the correct format (YYYY-MM-DD)"""
+    parts = date_text.split("-")
+    if len(parts) != 3:
+        return False
+
+    year = parts[0]
+    month = parts[1]
+    day = parts[2]
+
+    if len(year) != 4 or len(month) != 2 or len(day) != 2:
+        return False
+    if not year.isdigit() or not month.isdigit() or not day.isdigit():
+        return False
+    if int(month) < 1 or int(month) > 12:
+        return False   
+    if int(day) < 1 or int(day) > 31:
+        return False
+    return True
+
+def ask_date(question):
+    """Keeps asking until the date is in the correct format (YYYY-MM-DD)"""
+    while True:
+        answer = input(question).strip()
+        if is_valid_date(answer):
+            return answer
+        print("!! This is not a valid date. Please write it like 2025-10-14")
+
+def ask_scores():
+    """Asks for the max score and the score, and 
+    makes sure the score is not higher than the max score."""
+    while True:
+        max_score = ask_number("Max Score   :")
+        if max_score <= 0:
+            print("!! The max score must be bigger than 0.")
+            continue
+        break
+
+    while True:
+        score = ask_number("Score       :")
+        if score > max_score:
+            print("!! The score cannot be higher than the max score ({}).".format(max_score))
+            continue
+        break
+
+    return score, max_score
+
 def show_menu():
     """Prints the main menu."""
     print()
@@ -23,11 +94,10 @@ def add_assignment(tracker, kind):
     print()
     print("--- Add a new {} ---".format(kind))
 
-    subject = input("Subject     :")
-    title = input("Title        :")
-    max_score = float(input("Max Score   :"))
-    score = float(input("Score       :"))
-    due_date = input("Due Date (YYYY-MM-DD) :")
+    subject = ask_text("Subject     :")
+    title = ask_text("Title       :")
+    score, max_score = ask_scores()
+    due_date = ask_date("Due date (YYYY-MM-DD)   :")
 
     if kind == "homework":
         new_item = Homework(subject, title, score, max_score, due_date)
@@ -49,6 +119,7 @@ def print_assignments(items):
     for item in items:
         print("{}. {}".format(number, item.display()))
         number = number + 1
+    print("---------------------------------------------")
     print("Total: {} assignment(s)".format(len(items)))
 
 def do_filter(tracker):
@@ -62,21 +133,21 @@ def do_filter(tracker):
     print("a) By type (homework or exam)")
     print("b) By subject")
     print("c) By month (example: 2026-07)")
-    choice = input("Your choice: ").strip().lower()
+    choice = ask_text("Your choice: ").strip().lower()
 
     if choice == "a":
-        atype = input("Enter the type (homework or exam): ").strip().lower()
+        atype = ask_text("Enter the type (homework or exam): ").strip().lower()
         if atype != "homework" and atype != "exam":
             print("\nInvalid type. Must be 'homework' or 'exam'.")
             return
         results = tracker.filter_assignments("type", atype)
 
     elif choice == "b":
-        subject = input("Enter the subject: ")
+        subject = ask_text("Enter the subject: ")
         results = tracker.filter_assignments("subject", subject)
 
     elif choice == "c":
-        month = input("Enter the month (YYYY-MM): ")
+        month = ask_text("Enter the month (YYYY-MM): ")
         results = tracker.filter_assignments("month", month)
 
     else:
@@ -122,7 +193,7 @@ def main():
     running = True
     while running:
         show_menu()
-        choice = input("Choose and option: ").strip()
+        choice = ask_text("Choose an option: ").strip()
 
         if choice == "1":
             add_assignment(tracker, "homework")
