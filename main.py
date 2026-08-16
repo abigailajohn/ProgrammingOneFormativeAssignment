@@ -85,6 +85,7 @@ def show_menu():
     print("3) List assignments")
     print("4) Filter (by subject / type / month)")
     print("5) Show summary")
+    print("6) Undo last entry")
     print("0) Exit")
     print("===================================")
 
@@ -205,11 +206,17 @@ def main():
             do_filter(tracker)
         elif choice == "5":
             print_summary(tracker)
+        elif choice == "6":
+            removed = tracker.undo_last()
+            if removed is None:
+                print("\nThere is nothing to undo.")
+            else:
+                print("\nRemoved: {}".format(removed.title))
         elif choice == "0":
             print("\nGoodbye! Nothing was saved because this is a session only progam")
             running = False
         else:
-            print("\n!! '{}' is not on the menu. Please choose 0 to 5.".format(choice))
+            print("\n!! '{}' is not on the menu. Please choose 0 to 6.".format(choice))
 
 if __name__ == "__main__":
     main()

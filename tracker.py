@@ -76,5 +76,12 @@ class GradeTracker:
         }
         return summary
 
+    def undo_last(self):
+        """Removes the last assignment that was added (extra feature)."""
+        if len(self.assignments) == 0:
+            return None
+        last = self.assignments.pop()
+        return last
+
 
             
